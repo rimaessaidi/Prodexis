@@ -1,0 +1,129 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Edit Project {% endblock %}
+
+{% block stylesheets %}
+<link
+  href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.2/dist/css/select2.min.css"
+  rel="stylesheet"
+/>
+<style>
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .loader {
+    border: 8px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 8px solid #3498db;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .return-btn {
+    position: sticky;
+    top: 10px;
+    left: 10px;
+    background-color: #3f4d67;
+    color: white;
+    border: none;
+    padding: 10px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    z-index: 100;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="pcoded-main-container">
+  <div class="pcoded-wrapper">
+    <div class="pcoded-content">
+      <div class="pcoded-inner-content">
+        <button class="return-btn" id="return-btn">
+          <i class="fas fa-arrow-left"></i></button
+        ><br />
+        <div class="page-header">
+          <div class="page-block">
+            <div class="row align-items-center">
+              <div class="col-md-12">
+                <div class="page-header-title">
+                  <h5 class="m-b-10">Edit Project Name</h5>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12">
+          <div class="card">
+            <div class="card-header">
+              <h5>Edit Project</h5>
+            </div>
+            <div class="card-block">
+              <form
+                method="POST"
+                action="{{ url_for('home_blueprint.edit_project', project_id=project.id) }}"
+              >
+                <div class="form-group">
+                  <label for="name">Project Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="name"
+                    name="name"
+                    value="{{ project.name }}"
+                    required
+                  />
+                </div>
+                <button type="submit" class="btn btn-primary">
+                  Save Changes
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Loader Overlay -->
+<div class="overlay" id="overlay">
+  <div class="loader"></div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+  document.addEventListener("submit", function () {
+    document.getElementById("overlay").style.display = "flex";
+  });
+
+  document.getElementById("return-btn").addEventListener("click", function () {
+    window.location.href = '{{ url_for("home_blueprint.super_admin_index") }}';
+  });
+</script>
+{% endblock %}

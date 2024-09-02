@@ -1,0 +1,252 @@
+{% extends "layouts/base.html" %} {% block title %} Dashboard {% endblock %} {%
+block stylesheets %}
+<style>
+  .add-user-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+
+  .table-info {
+    background-color: #d1ecf1;
+    /* Light blue background */
+    color: #0c5460;
+    /* Dark blue text */
+  }
+</style>
+{% endblock stylesheets %} {% block content %}
+<!-- [ Main Content ] start -->
+<div class="pcoded-main-container">
+  <div class="pcoded-wrapper">
+    <div class="pcoded-content">
+      <div class="pcoded-inner-content">
+        <!-- [ breadcrumb ] start -->
+
+        <!-- [ breadcrumb ] end -->
+        <h5>Admin Control Panel</h5>
+        <span class="d-block m-t-5">
+          Here you can manage and view the data for users, projects, and other related information. Select a tab to view
+          the respective entries, and update or delete them as needed.
+        </span>
+        <br />
+        <h5 class="mt-4">Manage Data</h5>
+        <hr />
+        <div class="main-body">
+          <div class="page-wrapper">
+            <!-- [ Main Content ] start -->
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active show" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                  aria-controls="home" aria-selected="false">Users</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                  aria-controls="profile" aria-selected="true">Projects</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
+                  aria-controls="contact" aria-selected="false">Projects by User</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" id="country-tab" data-toggle="tab" href="#country" role="tab"
+                  aria-controls="country" aria-selected="false">Users by Country</a>
+              </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+              <div class="tab-pane fade active show" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <a href="{{ url_for('home_blueprint.add_user') }}" class="btn btn-success add-user-btn">Add User</a>
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>User</th>
+                      <th>Email</th>
+                      <th>Role</th>
+                      <th>Country</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for user in users %}
+                    <tr class="{% if user.id == session['user_id'] %}table-info{% endif %}">
+                      <th scope="row">
+                        <h6 class="m-0">{{ loop.index }}</h6>
+                      </th>
+                      <td>
+                        <h6 class="m-0">{{ user.username }}</h6>
+                      </td>
+                      <td>
+                        <h6 class="m-0">{{ user.email }}</h6>
+                      </td>
+                      <td>
+                        <h6 class="m-0">{{ user.role }}</h6>
+                      </td>
+                      <td>
+                        <h6 class="m-0">{{ user.country }}</h6>
+                      </td>
+                      <td>
+                        <a href="{{ url_for('home_blueprint.edit_user', user_id=user.id) }}"
+                          class="btn btn-warning btn-sm">Edit</a>
+                        <form action="{{ url_for('home_blueprint.delete_user', id=user.id) }}" method="POST"
+                          style="display: inline">
+                          <button type="submit" class="btn btn-danger btn-sm">
+                            Delete
+                          </button>
+                        </form>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <!-- Projects Table -->
+                <a href="{{ url_for('home_blueprint.add_project') }}" class="btn btn-success add-user-btn">Add
+                  Project</a>
+                <table class="table table-hover mt-4">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Project Name</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for project in all_projects %}
+                    <tr>
+                      <th scope="row">
+                        <h6 class="m-0">{{ loop.index }}</h6>
+                      </th>
+                      <td>
+                        <h6 class="m-0">{{ project.name }}</h6>
+                      </td>
+                      <td>
+                        <a href="{{ url_for('home_blueprint.edit_project', project_id=project.id) }}"
+                          class="btn btn-warning btn-sm">Edit</a>
+
+                        <form action="{{ url_for('home_blueprint.edit_project', project_id=project.id) }}" method="POST"
+                          style="display: inline">
+                          <button type="submit" class="btn btn-danger btn-sm">
+                            Delete
+                          </button>
+                        </form>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                <!-- Projects Table -->
+                <!-- Project-User Associations Table -->
+                <table class="table table-hover mt-4">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>User Name</th>
+                      <th>Project Names</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% set users_projects = {} %} {% for association in
+                    project_user_associations %} {% if association['user_name']
+                    not in users_projects %} {% set _ =
+                    users_projects.update({association['user_name']: {'id':
+                    association['user_id'], 'projects': []}}) %} {% endif %} {%
+                    if association['project_name'] not in
+                    users_projects[association['user_name']]['projects'] %} {%
+                    set _ =
+                    users_projects[association['user_name']]['projects'].append(association['project_name'])
+                    %} {% endif %} {% endfor %} {% for user, data in
+                    users_projects.items() %}
+                    <tr class="{% if user == session['username'] %}table-info{% endif %}">
+                      <th scope="row">
+                        <h6 class="m-0">{{ loop.index }}</h6>
+                      </th>
+                      <td>
+                        <h6 class="m-0">{{ user }}</h6>
+                      </td>
+                      <td>{{ data['projects'] | join(', ') }}</td>
+                      <td>
+                        {% if data['projects']|length == 0 %}
+                        <!-- Assign Project button if no projects are assigned -->
+                        <a href="{{ url_for('home_blueprint.edit_user_projects', user_id=data['id']) }}"
+                          class="btn btn-primary btn-sm">Assign Project</a>
+                        {% else %}
+                        <!-- Edit and Delete buttons if projects are assigned -->
+                        <a href="{{ url_for('home_blueprint.edit_user_projects', user_id=data['id']) }}"
+                          class="btn btn-warning btn-sm">Edit</a>
+                        <form action="{{ url_for('home_blueprint.delete_user_projects', user_id=data['id']) }}"
+                          method="POST" style="display: inline">
+                          <button type="submit" class="btn btn-danger btn-sm">
+                            Delete
+                          </button>
+                        </form>
+                        {% endif %}
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              <div class="tab-pane fade" id="country" role="tabpanel" aria-labelledby="country-tab">
+                <a href="{{ url_for('home_blueprint.add_country') }}" class="btn btn-success add-user-btn">Add
+                  Country</a>
+                <!-- Country-User Associations Table -->
+                <table class="table table-hover mt-4">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Country</th>
+                      <th>User Names</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% set countries_users = {} %} {% for association in
+                    country_user_associations %} {% if association['country']
+                    not in countries_users %} {% set _ =
+                    countries_users.update({association['country']: {'users':
+                    []}}) %} {% endif %} {% if association['user_name'] not in
+                    countries_users[association['country']]['users'] %} {% set _
+                    =
+                    countries_users[association['country']]['users'].append(association['user_name'])
+                    %} {% endif %} {% endfor %} {% for country, data in
+                    countries_users.items() %}
+                    <tr class="{% if country == session['country'] %}table-info{% endif %}">
+                      <th scope="row">
+                        <h6 class="m-0">{{ loop.index }}</h6>
+                      </th>
+                      <td>
+                        <h6 class="m-0">{{ country }}</h6>
+                      </td>
+                      <td>{{ data['users'] | join(', ') }}</td>
+                      <td>
+                        <a href="{{ url_for('home_blueprint.edit_country', country_name=country) }}"
+                          class="btn btn-warning btn-sm">Edit</a>
+                        <form action="{{ url_for('home_blueprint.delete_country', country_name=country) }}"
+                          method="POST" style="display: inline">
+                          <button type="submit" class="btn btn-danger btn-sm">
+                            Delete
+                          </button>
+                        </form>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- [ Main Content ] end -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- [ Main Content ] end -->
+
+{% endblock content %} {% block javascripts %} {% endblock javascripts %}

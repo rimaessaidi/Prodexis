@@ -1,0 +1,901 @@
+{% extends "layouts/base.html" %} {% block title %} Products {% endblock %} {%
+block stylesheets %}
+<style>
+  #pills-home-tab.active {
+    background-color: #feee00;
+  }
+
+  #pills-profile-tab.active {
+    background-color: #e8ebee;
+  }
+
+  #pills-extra-tab.active {
+    background-color: #dbe3e8;
+  }
+
+  #pills-tunisianet-tab.active {
+    background-color: #2470bc;
+  }
+
+  #pills-mytek-tab.active {
+    background-color: #293847;
+  }
+
+  .add-product-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+
+  .card {
+    position: relative;
+  }
+</style>
+{% endblock stylesheets %} {% block content %}
+<section class="pcoded-main-container">
+  <div class="pcoded-wrapper">
+    <div class="pcoded-content">
+      <div class="pcoded-inner-content">
+        <!-- [ breadcrumb ] start -->
+        <div class="page-header">
+          <div class="page-block">
+            <div class="row align-items-center">
+              <div class="col-md-12">
+                <div class="page-header-title">
+                  <h5 class="m-b-10">Product Listings</h5>
+                  <span class="d-block m-t-5">
+                    Explore the latest products available for purchase. You can
+                    view details and make updates as needed.
+                  </span>
+                  <a href="{{ url_for('home_blueprint.add_product', project_id=session['selectedProjectId']) }}"
+                    class="btn btn-success add-product-btn">Add Product</a>
+                </div>
+                <!-- <ul class="breadcrumb">
+                  <li class="breadcrumb-item">
+                    <a href="/"><i class="feather icon-home"></i></a>
+                  </li>
+                  <li class="breadcrumb-item">
+                    <a href="javascript:">Products</a>
+                  </li>
+                </ul> -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- [ breadcrumb ] end -->
+
+        <!-- [ Main Content ] start -->
+        <div class="col-sm-12">
+          <h5 class="mt-4">Common Websites</h5>
+          <hr />
+          <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+
+            {% if session.get('user_role') == 'super admin' %}
+            <!-- Display all tabs for super admin -->
+            <li class="nav-item">
+              <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab"
+                aria-controls="pills-home" aria-selected="true"
+                style="padding: 0px; padding-right: 0px; padding-left: 0px">
+                <img src="https://f.nooncdn.com/s/app/com/noon/design-system/logos/noon-logo-en.svg" alt="noon"
+                  width="70" height="40" />
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab"
+                aria-controls="pills-profile" aria-selected="false">
+                <img src="https://www.jarir.com/assets/images/logo/jarir.svg" alt="Jarir Logo"
+                  class="logo__image logo__image--desktop"
+                  style="padding: 0px; padding-right: 0px; padding-left: 0px" />
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="pills-extra-tab" data-toggle="pill" href="#pills-extra" role="tab"
+                aria-controls="pills-extra" aria-selected="false"
+                style="padding: 3px; padding-right: 0px; padding-left: 0px">
+                <img src="https://cdn.extrastores.com/hybris/new_ui_ux/logo/eXtra-logo.svg" alt="eXtra" width="65"
+                  height="35" />
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="pills-tunisianet-tab" data-toggle="pill" href="#pills-tunisianet" role="tab"
+                aria-controls="pills-tunisianet" aria-selected="false"
+                style="padding: 5px; padding-right: 0px; padding-left: 0px">
+                <img src="{{ url_for('static', filename='assets/images/tunisianet.png') }}" alt="Tunisianet" width="75"
+                  height="30" />
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="pills-mytek-tab" data-toggle="pill" href="#pills-mytek" role="tab"
+                aria-controls="pills-mytek" aria-selected="false"
+                style="padding: 7px; padding-right: 0px; padding-left: 0px">
+                <img src="https://mk-media.mytek.tn/media/logo/stores/1/LOGO-MYTEK-176PX-INVERSE.png" alt="Mytek"
+                  width="55" height="25" />
+              </a>
+            </li>
+
+            {% elif session.get('user_country') == 'Saudi Arabia' %}
+            <!-- Display Saudi Arabia tabs -->
+            <li class="nav-item">
+              <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab"
+                aria-controls="pills-home" aria-selected="true"
+                style="padding: 0px; padding-right: 0px; padding-left: 0px">
+                <img src="https://f.nooncdn.com/s/app/com/noon/design-system/logos/noon-logo-en.svg" alt="noon"
+                  width="70" height="40" />
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab"
+                aria-controls="pills-profile" aria-selected="false">
+                <img src="https://www.jarir.com/assets/images/logo/jarir.svg" alt="Jarir Logo"
+                  class="logo__image logo__image--desktop"
+                  style="padding: 0px; padding-right: 0px; padding-left: 0px" />
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="pills-extra-tab" data-toggle="pill" href="#pills-extra" role="tab"
+                aria-controls="pills-extra" aria-selected="false"
+                style="padding: 3px; padding-right: 0px; padding-left: 0px">
+                <img src="https://cdn.extrastores.com/hybris/new_ui_ux/logo/eXtra-logo.svg" alt="eXtra" width="65"
+                  height="35" />
+              </a>
+            </li>
+
+            {% elif session.get('user_country') == 'Tunisia' %}
+            <!-- Display Tunisia tabs -->
+            <li class="nav-item">
+              <a class="nav-link active" id="pills-tunisianet-tab" data-toggle="pill" href="#pills-tunisianet"
+                role="tab" aria-controls="pills-tunisianet" aria-selected="true"
+                style="padding: 5px; padding-right: 0px; padding-left: 0px">
+                <img src="{{ url_for('static', filename='assets/images/tunisianet.png') }}" alt="Tunisianet" width="75"
+                  height="30" />
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="pills-mytek-tab" data-toggle="pill" href="#pills-mytek" role="tab"
+                aria-controls="pills-mytek" aria-selected="false"
+                style="padding: 7px; padding-right: 0px; padding-left: 0px">
+                <img src="https://mk-media.mytek.tn/media/logo/stores/1/LOGO-MYTEK-176PX-INVERSE.png" alt="Mytek"
+                  width="55" height="25" />
+              </a>
+            </li>
+
+            {% elif session.get('user_country') == 'International' %}
+            <!-- Display International tabs -->
+            {% endif %}
+          </ul>
+          <div class="tab-content" id="pills-tabContent">
+            <!-- Content For Noon Tab -->
+            <div
+              class="tab-pane fade {% if session.get('user_country') == 'Saudi Arabia' or session.get('user_country') == 'International' %}show active{% endif %}"
+              id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+              {% if session.get('selectedProjectId') %}
+              <!-- [ Links Table ] start -->
+              <div class="card">
+                <div class="card-header">
+                  <h5>Links Table</h5>
+                  <span class="d-block m-t-5">
+                    Here you can view all the product links. You can view the
+                    products and update or delete entries if needed.
+                  </span>
+                </div>
+                <div class="card-block table-border-style">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Image</th>
+                          <th>Product Link</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for link in links if link.category == 'noon' %}
+                        <tr>
+                          <th scope="row">{{ loop.index }}</th>
+                          <td>
+                            <img src="{{ link['image_url'] }}" alt="Product Image" width="100" />
+                          </td>
+                          <td>
+                            <a href="{{ link['product_link'] }}" target="_blank">View Product in Website</a>
+                          </td>
+                          <td>
+                            <a href="{{ url_for('home_blueprint.update_product', id=link['id']) }}"
+                              class="btn btn-warning btn-sm">Update Link</a>
+                            <form action="{{ url_for('home_blueprint.scrape_product') }}" method="POST"
+                              style="display: inline">
+                              <input type="hidden" name="product_link" value="{{ link['product_link'] }}" />
+                              <button type="submit" class="btn btn-primary btn-sm">
+                                Scrape
+                              </button>
+                            </form>
+                            <form action="{{ url_for('home_blueprint.delete_product', id=link['id']) }}" method="POST"
+                              style="display: inline">
+                              <button type="submit" class="btn btn-danger btn-sm">
+                                Delete
+                              </button>
+                            </form>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <!-- [ Links Table ] end -->
+
+              <!-- [ Product Table ] start -->
+              <div class="card">
+                <div class="card-header">
+                  <h5>Product Table</h5>
+                  <span class="d-block m-t-5">
+                    Here you can view details of all products. Use the actions
+                    provided to update or delete entries as necessary.
+                  </span>
+                  <br>
+                  <form method="get" action="{{ url_for('home_blueprint.hover_table') }}" class="form-inline">
+                    <div class="form-group mx-sm-3 mb-2">
+                      <label for="filter_date" class="sr-only">Date</label>
+                      <input type="date" class="form-control" id="filter_date" name="filter_date"
+                        placeholder="Select Date" style="border-color: #007bff; font-weight: bold;" {% if
+                        request.args.get('filter_date') %} value="{{
+                      request.args.get('filter_date') }}" {% endif %} />
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-2">
+                      Filter
+                    </button>
+                  </form>
+                </div>
+                <div class="card-block table-border-style">
+                  <div class="table-responsive">
+                    {% if no_products_found %}
+                    <p>No products found for the selected date.</p>
+                    {% else %}
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Date Added</th>
+                          <th>Image</th>
+                          <th>Product Link</th>
+                          <th>Title</th>
+                          <th>Currency</th>
+                          <th>Current Price</th>
+                          <th>Old Price</th>
+                          <th>Price Saving</th>
+                          <th>Discount</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for row in products if row.category == 'noon' %}
+                        <tr>
+                          <th scope="row">{{ loop.index }}</th>
+                          <td>{{ row[1] }}</td>
+                          <td>
+                            <img src="{{ row[2] }}" alt="Product Image" width="100" />
+                          </td>
+                          <td>
+                            <a href="{{ row[3] }}" target="_blank">View Product on Website</a>
+                          </td>
+                          <td>{{ row[4] }}</td>
+                          <td>{{ row[5] }}</td>
+                          <td>{{ row[6] }}</td>
+                          <td>{{ row[7] }}</td>
+                          <td>{{ row[8] }}</td>
+                          <td>{{ row[9] }}</td>
+                          <td>
+                            <form action="{{ url_for('home_blueprint.delete_product', id=row[0]) }}" method="POST"
+                              style="display: inline">
+                              <button type="submit" class="btn btn-danger btn-sm">
+                                Delete
+                              </button>
+                            </form>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              <!-- [ Product Table ] end -->
+            </div>
+            <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+              <!-- Content for Jarir tab -->
+              <!-- [ Links Table ] start -->
+              <div class="card">
+                <div class="card-header">
+                  <h5>Links Table</h5>
+                  <span class="d-block m-t-5">
+                    Here you can view all the product links. You can view the
+                    products and update or delete entries if needed.
+                  </span>
+                </div>
+                <div class="card-block table-border-style">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Image</th>
+                          <th>Product Link</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for link in links if link.category == 'jarir' %}
+                        <tr>
+                          <th scope="row">{{ loop.index }}</th>
+                          <td>
+                            <img src="{{ link['image_url'] }}" alt="Product Image" width="100" />
+                          </td>
+                          <td>
+                            <a href="{{ link['product_link'] }}" target="_blank">View Product in Website</a>
+                          </td>
+                          <td>
+                            <a href="{{ url_for('home_blueprint.update_product', id=link['id']) }}"
+                              class="btn btn-warning btn-sm">Update Link</a>
+                            <form action="{{ url_for('home_blueprint.scrape_product') }}" method="POST"
+                              style="display: inline">
+                              <input type="hidden" name="product_link" value="{{ link['product_link'] }}" />
+                              <button type="submit" class="btn btn-primary btn-sm">
+                                Scrape
+                              </button>
+                            </form>
+                            <form action="{{ url_for('home_blueprint.delete_product', id=link['id']) }}" method="POST"
+                              style="display: inline">
+                              <button type="submit" class="btn btn-danger btn-sm">
+                                Delete
+                              </button>
+                            </form>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <!-- [ Links Table ] end -->
+
+              <!-- [ Product Table ] start -->
+              <div class="card">
+                <div class="card-header">
+                  <h5>Product Table</h5>
+                  <span class="d-block m-t-5">
+                    Here you can view details of all products. Use the actions
+                    provided to update or delete entries as necessary.
+                  </span>
+                  <br>
+                  <form method="get" action="{{ url_for('home_blueprint.hover_table') }}" class="form-inline">
+                    <div class="form-group mx-sm-3 mb-2">
+                      <label for="filter_date" class="sr-only">Date</label>
+                      <input type="date" class="form-control" id="filter_date" name="filter_date"
+                        placeholder="Select Date" style="border-color: #007bff; font-weight: bold;" {% if
+                        request.args.get('filter_date') %} value="{{
+                      request.args.get('filter_date') }}" {% endif %} />
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-2">
+                      Filter
+                    </button>
+                  </form>
+                </div>
+                <div class="card-block table-border-style">
+                  <div class="table-responsive">
+                    {% if no_products_found %}
+                    <p>No products found for the selected date.</p>
+                    {% else %}
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Date Added</th>
+                          <th>Image</th>
+                          <th>Product Link</th>
+                          <th>Title</th>
+                          <th>Currency</th>
+                          <th>Current Price</th>
+                          <th>Old Price</th>
+                          <th>Price Saving</th>
+                          <th>Discount</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for row in products if row.category == 'jarir' %}
+                        <tr>
+                          <th scope="row">{{ loop.index }}</th>
+                          <td>{{ row[1] }}</td>
+                          <td>
+                            <img src="{{ row[2] }}" alt="Product Image" width="100" />
+                          </td>
+                          <td>
+                            <a href="{{ row[3] }}" target="_blank">View Product on Website</a>
+                          </td>
+                          <td>{{ row[4] }}</td>
+                          <td>{{ row[5] }}</td>
+                          <td>{{ row[6] }}</td>
+                          <td>{{ row[7] }}</td>
+                          <td>{{ row[8] }}</td>
+                          <td>{{ row[9] }}</td>
+                          <td>
+                            <form action="{{ url_for('home_blueprint.delete_product', id=row[0]) }}" method="POST"
+                              style="display: inline">
+                              <button type="submit" class="btn btn-danger btn-sm">
+                                Delete
+                              </button>
+                            </form>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              <!-- [ Product Table ] end -->
+            </div>
+            <div class="tab-pane fade" id="pills-extra" role="tabpanel" aria-labelledby="pills-extra-tab">
+              <!-- Content for eXtra tab -->
+              <!-- [ Links Table ] start -->
+              <div class="card">
+                <div class="card-header">
+                  <h5>Links Table</h5>
+                  <span class="d-block m-t-5">
+                    Here you can view all the product links. You can view the
+                    products and update or delete entries if needed.
+                  </span>
+                </div>
+                <div class="card-block table-border-style">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Image</th>
+                          <th>Product Link</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for link in links if link.category == 'extra' %}
+                        <tr>
+                          <th scope="row">{{ loop.index }}</th>
+                          <td>
+                            <img src="{{ link['image_url'] }}" alt="Product Image" width="100" />
+                          </td>
+                          <td>
+                            <a href="{{ link['product_link'] }}" target="_blank">View Product in Website</a>
+                          </td>
+                          <td>
+                            <a href="{{ url_for('home_blueprint.update_product', id=link['id']) }}"
+                              class="btn btn-warning btn-sm">Update Link</a>
+                            <form action="{{ url_for('home_blueprint.scrape_product') }}" method="POST"
+                              style="display: inline">
+                              <input type="hidden" name="product_link" value="{{ link['product_link'] }}" />
+                              <button type="submit" class="btn btn-primary btn-sm">
+                                Scrape
+                              </button>
+                            </form>
+                            <form action="{{ url_for('home_blueprint.delete_product', id=link['id']) }}" method="POST"
+                              style="display: inline">
+                              <button type="submit" class="btn btn-danger btn-sm">
+                                Delete
+                              </button>
+                            </form>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <!-- [ Links Table ] end -->
+
+              <!-- [ Product Table ] start -->
+              <div class="card">
+                <div class="card-header">
+                  <h5>Product Table</h5>
+                  <span class="d-block m-t-5">
+                    Here you can view details of all products. Use the actions
+                    provided to update or delete entries as necessary.
+                  </span>
+                  <br>
+                  <form method="get" action="{{ url_for('home_blueprint.hover_table') }}" class="form-inline">
+                    <div class="form-group mx-sm-3 mb-2">
+                      <label for="filter_date" class="sr-only">Date</label>
+                      <input type="date" class="form-control" id="filter_date" name="filter_date"
+                        placeholder="Select Date" style="border-color: #007bff; font-weight: bold;" {% if
+                        request.args.get('filter_date') %} value="{{
+                      request.args.get('filter_date') }}" {% endif %} />
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-2">
+                      Filter
+                    </button>
+                  </form>
+                </div>
+                <div class="card-block table-border-style">
+                  <div class="table-responsive">
+                    {% if no_products_found %}
+                    <p>No products found for the selected date.</p>
+                    {% else %}
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Date Added</th>
+                          <th>Image</th>
+                          <th>Product Link</th>
+                          <th>Title</th>
+                          <th>Currency</th>
+                          <th>Current Price</th>
+                          <th>Old Price</th>
+                          <th>Price Saving</th>
+                          <th>Discount</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for row in products if row.category == 'extra' %}
+                        <tr>
+                          <th scope="row">{{ loop.index }}</th>
+                          <td>{{ row[1] }}</td>
+                          <td>
+                            <img src="{{ row[2] }}" alt="Product Image" width="100" />
+                          </td>
+                          <td>
+                            <a href="{{ row[3] }}" target="_blank">View Product on Website</a>
+                          </td>
+                          <td>{{ row[4] }}</td>
+                          <td>{{ row[5] }}</td>
+                          <td>{{ row[6] }}</td>
+                          <td>{{ row[7] }}</td>
+                          <td>{{ row[8] }}</td>
+                          <td>{{ row[9] }}</td>
+                          <td>
+                            <form action="{{ url_for('home_blueprint.delete_product', id=row[0]) }}" method="POST"
+                              style="display: inline">
+                              <button type="submit" class="btn btn-danger btn-sm">
+                                Delete
+                              </button>
+                            </form>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              <!-- [ Product Table ] end -->
+            </div>
+            <!-- Content for Tunisianet tab -->
+            <div class="tab-pane fade {% if session.get('user_country') == 'Tunisia' %}show active{% endif %}"
+              id="pills-tunisianet" role="tabpanel" aria-labelledby="pills-tunisianet-tab">
+              <!-- [ Links Table ] start -->
+              <div class="card">
+                <div class="card-header">
+                  <h5>Links Table</h5>
+                  <span class="d-block m-t-5">
+                    Here you can view all the product links. You can view the
+                    products and update or delete entries if needed.
+                  </span>
+                </div>
+                <div class="card-block table-border-style">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Image</th>
+                          <th>Product Link</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for link in links if link.category == 'tunisianet' %}
+                        <tr>
+                          <th scope="row">{{ loop.index }}</th>
+                          <td>
+                            <img src="{{ link['image_url'] }}" alt="Product Image" width="100" />
+                          </td>
+                          <td>
+                            <a href="{{ link['product_link'] }}" target="_blank">View Product in Website</a>
+                          </td>
+                          <td>
+                            <a href="{{ url_for('home_blueprint.update_product', id=link['id']) }}"
+                              class="btn btn-warning btn-sm">Update Link</a>
+                            <form action="{{ url_for('home_blueprint.scrape_product') }}" method="POST"
+                              style="display: inline">
+                              <input type="hidden" name="product_link" value="{{ link['product_link'] }}" />
+                              <button type="submit" class="btn btn-primary btn-sm">
+                                Scrape
+                              </button>
+                            </form>
+                            <form action="{{ url_for('home_blueprint.delete_product', id=link['id']) }}" method="POST"
+                              style="display: inline">
+                              <button type="submit" class="btn btn-danger btn-sm">
+                                Delete
+                              </button>
+                            </form>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <!-- [ Links Table ] end -->
+
+              <!-- [ Product Table ] start -->
+              <div class="card">
+                <div class="card-header">
+                  <h5>Product Table</h5>
+                  <span class="d-block m-t-5">
+                    Here you can view details of all products. Use the actions
+                    provided to update or delete entries as necessary.
+                  </span>
+                  <br>
+                  <form method="get" action="{{ url_for('home_blueprint.hover_table') }}" class="form-inline">
+                    <div class="form-group mx-sm-3 mb-2">
+                      <label for="filter_date" class="sr-only">Date</label>
+                      <input type="date" class="form-control" id="filter_date" name="filter_date"
+                        placeholder="Select Date" style="border-color: #007bff; font-weight: bold;" {% if
+                        request.args.get('filter_date') %} value="{{
+                      request.args.get('filter_date') }}" {% endif %} />
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-2">
+                      Filter
+                    </button>
+                  </form>
+                </div>
+                <div class="card-block table-border-style">
+                  <div class="table-responsive">
+                    {% if no_products_found %}
+                    <p>No products found for the selected date.</p>
+                    {% else %}
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Date Added</th>
+                          <th>Image</th>
+                          <th>Product Link</th>
+                          <th>Title</th>
+                          <th>Currency</th>
+                          <th>Current Price</th>
+                          <th>Old Price</th>
+                          <th>Price Saving</th>
+                          <th>Discount</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for row in products if row.category == 'tunisianet'
+                        %}
+                        <tr>
+                          <th scope="row">{{ loop.index }}</th>
+                          <td>{{ row[1] }}</td>
+                          <td>
+                            <img src="{{ row[2] }}" alt="Product Image" width="100" />
+                          </td>
+                          <td>
+                            <a href="{{ row[3] }}" target="_blank">View Product on Website</a>
+                          </td>
+                          <td>{{ row[4] }}</td>
+                          <td>{{ row[5] }}</td>
+                          <td>{{ row[6] }}</td>
+                          <td>{{ row[7] }}</td>
+                          <td>{{ row[8] }}</td>
+                          <td>{{ row[9] }}</td>
+                          <td>
+                            <form action="{{ url_for('home_blueprint.delete_product', id=row[0]) }}" method="POST"
+                              style="display: inline">
+                              <button type="submit" class="btn btn-danger btn-sm">
+                                Delete
+                              </button>
+                            </form>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              <!-- [ Product Table ] end -->
+            </div>
+
+            <!-- Content for Mytek tab -->
+            <div class="tab-pane fade" id="pills-mytek" role="tabpanel" aria-labelledby="pills-mytek-tab">
+              <!-- [ Links Table ] start -->
+              <div class="card">
+                <div class="card-header">
+                  <h5>Links Table</h5>
+                  <span class="d-block m-t-5">
+                    Here you can view all the product links. You can view the
+                    products and update or delete entries if needed.
+                  </span>
+                </div>
+                <div class="card-block table-border-style">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Image</th>
+                          <th>Product Link</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for link in links if link.category == 'mytek' %}
+                        <tr>
+                          <th scope="row">{{ loop.index }}</th>
+                          <td>
+                            <img src="{{ link['image_url'] }}" alt="Product Image" width="100" />
+                          </td>
+                          <td>
+                            <a href="{{ link['product_link'] }}" target="_blank">View Product in Website</a>
+                          </td>
+                          <td>
+                            <a href="{{ url_for('home_blueprint.update_product', id=link['id']) }}"
+                              class="btn btn-warning btn-sm">Update Link</a>
+                            <form action="{{ url_for('home_blueprint.scrape_product') }}" method="POST"
+                              style="display: inline">
+                              <input type="hidden" name="product_link" value="{{ link['product_link'] }}" />
+                              <button type="submit" class="btn btn-primary btn-sm">
+                                Scrape
+                              </button>
+                            </form>
+                            <form action="{{ url_for('home_blueprint.delete_product', id=link['id']) }}" method="POST"
+                              style="display: inline">
+                              <button type="submit" class="btn btn-danger btn-sm">
+                                Delete
+                              </button>
+                            </form>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <!-- [ Links Table ] end -->
+
+              <!-- [ Product Table ] start -->
+              <div class="card">
+                <div class="card-header">
+                  <h5>Product Table</h5>
+                  <span class="d-block m-t-5">
+                    Here you can view details of all products. Use the actions
+                    provided to update or delete entries as necessary.
+                  </span>
+                  <br>
+                  <form method="get" action="{{ url_for('home_blueprint.hover_table') }}" class="form-inline">
+                    <div class="form-group mx-sm-3 mb-2">
+                      <label for="filter_date" class="sr-only">Date</label>
+                      <input type="date" class="form-control" id="filter_date" name="filter_date"
+                        placeholder="Select Date" style="border-color: #007bff; font-weight: bold;" {% if
+                        request.args.get('filter_date') %} value="{{
+                      request.args.get('filter_date') }}" {% endif %} />
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-2">
+                      Filter
+                    </button>
+                  </form>
+                </div>
+                <div class="card-block table-border-style">
+                  <div class="table-responsive">
+                    {% if no_products_found %}
+                    <p>No products found for the selected date.</p>
+                    {% else %}
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Date Added</th>
+                          <th>Image</th>
+                          <th>Product Link</th>
+                          <th>Title</th>
+                          <th>Currency</th>
+                          <th>Current Price</th>
+                          <th>Old Price</th>
+                          <th>Price Saving</th>
+                          <th>Discount</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for row in products if row.category == 'mytek' %}
+                        <tr>
+                          <th scope="row">{{ loop.index }}</th>
+                          <td>{{ row[1] }}</td>
+                          <td>
+                            <img src="{{ row[2] }}" alt="Product Image" width="100" />
+                          </td>
+                          <td>
+                            <a href="{{ row[3] }}" target="_blank">View Product on Website</a>
+                          </td>
+                          <td>{{ row[4] }}</td>
+                          <td>{{ row[5] }}</td>
+                          <td>{{ row[6] }}</td>
+                          <td>{{ row[7] }}</td>
+                          <td>{{ row[8] }}</td>
+                          <td>{{ row[9] }}</td>
+                          <td>
+                            <form action="{{ url_for('home_blueprint.delete_product', id=row[0]) }}" method="POST"
+                              style="display: inline">
+                              <button type="submit" class="btn btn-danger btn-sm">
+                                Delete
+                              </button>
+                            </form>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              <!-- [ Product Table ] end -->
+            </div>
+          </div>
+          <!-- [ Main Content ] end -->
+          {% else %}
+          <div class="alert alert-warning" role="alert" style="border-color: #be1414; font-weight: bold;">
+            No project selected. Please select a project to view its links.
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock content %}
+
+<!-- Specific javascripts goes HERE -->
+{% block javascripts %}
+<script>
+  $(document).ready(function () {
+    // Handle tab click
+    $("#pills-tab a").on("click", function (e) {
+      e.preventDefault();
+      $(this).tab("show");
+    });
+
+    // Activate the corresponding tab based on the URL hash
+    var hash = window.location.hash;
+    if (hash) {
+      $('#pills-tab a[href="' + hash + '"]').tab("show");
+    }
+  });
+
+  // Handle the scrape button click
+  $(".scrape-btn").on("click", function () {
+    var linkId = $(this).data("link-id");
+    $.ajax({
+      url: "{{ url_for('home_blueprint.scrape_product') }}",
+      type: "POST",
+      data: { product_id: linkId },
+      success: function (response) {
+        alert("Scraping initiated for link ID: " + linkId);
+      },
+      error: function (xhr, status, error) {
+        console.error("Error initiating scrape:", error);
+      },
+    });
+  });
+</script>
+{% endblock javascripts %}

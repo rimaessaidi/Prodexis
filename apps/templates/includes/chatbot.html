@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% block stylesheets %}
+    <style>
+        /* Floating chat button */
+        #chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 2000;
+        }
+
+        #chatbot-button {
+            background-color: #3f4d67;
+            color: white;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-size: 20px;
+            text-align: center;
+            line-height: 30px;
+        }
+
+        #chat-window {
+            position: fixed;
+            bottom: 20px;
+            right: 100px;
+            width: 350px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 1001;
+        }
+
+        #chat-header {
+            background-color: #3f4d67;
+            color: white;
+            padding: 10px;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        #chat-body {
+            height: 300px;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        #chat-footer {
+            padding: 10px;
+            display: flex;
+        }
+
+        #chat-footer input[type="text"] {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 5px;
+        }
+
+        #chat-footer button {
+            background-color: #3f4d67;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #chat-window:not(.hidden) {
+            display: block;
+        }
+
+        /* Chat message bubbles */
+        .user-message,
+        .bot-message {
+            max-width: 70%;
+            padding: 10px;
+            border-radius: 15px;
+            margin: 5px 0;
+            clear: both;
+        }
+
+        .user-message {
+            background-color: #3f4d67;
+            color: white;
+            margin-left: auto;
+            display: inline-block;
+            float: right;
+            /* Ensures the container is on the right */
+            clear: both;
+            /* Ensures it does not overlap with other messages */
+        }
+
+
+        .bot-message {
+            background-color: #f1f1f1;
+            color: #333;
+            text-align: left;
+            margin-right: auto;
+            display: inline-block;
+            float: left;
+            /* Ensures the container is on the right */
+            clear: both;
+            /* Ensures it does not overlap with other messages */
+        }
+
+        .exit-button {
+            cursor: pointer;
+        }
+    </style>
+    {% endblock stylesheets %}
+</head>
+
+<body>
+    <div class="loader-bg">
+        <div class="loader-track">
+            <div class="loader-fill"></div>
+        </div>
+    </div>
+    <div id="chatbot-container">
+        <div id="chatbot-button">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='assets/images/prodexis-logo.ico') }}" alt="Prodexis Logo"
+                    style="width: 35px; height: auto;">
+            </div>
+        </div>
+        <div id="chat-window" class="hidden">
+            <div id="chat-header" onclick="toggleChat()">
+                <span>Chat with <img src="{{ url_for('static', filename='assets/images/prodexis-name.ico') }}"
+                        alt="Prodexis Logo" style="width: 70px; height: auto; margin-bottom: 4px;"></span>
+                <a class="exit-button" onclick="toggleChat()"><i class="feather icon-x"></i></a>
+            </div>
+            <div id="chat-body">
+                <div id="chat-content">
+                    <div id="loading-indicator" class="hidden">...</div>
+                </div>
+            </div>
+            <div id="chat-footer">
+                <input type="text" id="user-input" placeholder="Type a message...">
+                <button id="send-button">Send</button>
+            </div>
+        </div>
+    </div>
+
+    {% block content %}{% endblock content %}
+
+    {% block javascripts %}
+    <script>
+        function toggleChat() {
+            var chatWindow = document.getElementById("chat-window");
+            chatWindow.classList.toggle("hidden");
+        }
+
+        function sendMessage() {
+            var userInput = document.getElementById('user-input').value;
+            if (userInput.trim() === "") return;
+
+            // Display user message
+            document.getElementById('chat-content').innerHTML += '<div class="user-message">' + userInput + '</div>';
+            document.getElementById('user-input').value = '';
+
+            // Send the message to the backend
+            fetch('/home/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: userInput }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Display chatbot response
+                    document.getElementById('chat-content').innerHTML += '<div class="bot-message">' + data.response + '</div>';
+                    // Scroll chat to the bottom
+                    document.getElementById('chat-body').scrollTop = document.getElementById('chat-body').scrollHeight;
+                })
+                .catch(() => {
+                    document.getElementById('chat-content').innerHTML += '<div class="bot-message">Error in processing your request</div>';
+                });
+        }
+
+        document.getElementById('chatbot-button').addEventListener('click', toggleChat);
+
+        document.getElementById('send-button').addEventListener('click', sendMessage);
+
+        document.getElementById('user-input').addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent the default action of the Enter key
+                sendMessage();
+            }
+        });
+    </script>
+    {% endblock javascripts %}
+</body>
+
+</html>

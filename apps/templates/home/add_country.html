@@ -1,0 +1,100 @@
+{% extends "layouts/base.html" %}
+{% block title %} Add Country {% endblock %}
+
+{% block stylesheets %}
+<style>
+  /* Overlay Styles */
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Loader Styles */
+  .loader {
+    border: 8px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 8px solid #3498db;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+<section class="pcoded-main-container">
+  <div class="pcoded-wrapper">
+    <div class="pcoded-content">
+      <div class="pcoded-inner-content">
+        <div class="page-header">
+          <div class="page-block">
+            <div class="row align-items-center">
+              <div class="col-md-12">
+                <div class="page-header-title">
+                  <h5 class="m-b-10">Add New Country</h5>
+                  <p class="text-muted">
+                    Enter the country's name to add a new country to the system.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12">
+          <div class="card">
+            <div class="card-header">
+              <h5>Add Country</h5>
+            </div>
+            <div class="card-block">
+              <form id="add-country-form" method="POST" action="{{ url_for('home_blueprint.add_country') }}">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{ form.name.label(class="form-label") }}
+                    {{ form.name(class="form-control", placeholder="Enter country name") }}
+                    {% for error in form.name.errors %}
+                        <div class="alert alert-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <button type="submit" class="btn btn-primary">Add Country</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Loader Overlay -->
+<div class="overlay" id="overlay">
+  <div class="loader"></div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+<script>
+  document
+    .getElementById("add-country-form")
+    .addEventListener("submit", function () {
+      document.getElementById("overlay").style.display = "flex";
+    });
+</script>
+{% endblock javascripts %}

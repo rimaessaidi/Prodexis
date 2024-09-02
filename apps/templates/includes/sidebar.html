@@ -1,0 +1,81 @@
+<!-- [ navigation menu ] start -->
+<nav class="pcoded-navbar">
+  <div class="navbar-wrapper">
+    <div class="navbar-brand header-logo">
+      <a href="/" class="b-brand">
+        <div class="logo">
+          <img src="{{ url_for('static', filename='assets/images/prodexis-logo.ico') }}" alt="Prodexis Logo" style="width: 35px; height: auto; margin-top: 6px;">
+        </div>      
+        <span class="b-title"><img src="{{ url_for('static', filename='assets/images/prodexis-name.ico') }}" alt="Prodexis Logo" style="width: 100px; height: auto;"></span>
+      </a>
+      <a class="mobile-menu" id="mobile-collapse" href="javascript:"><span></span></a>
+    </div>
+    <div class="navbar-content scroll-div">
+      <ul class="nav pcoded-inner-navbar">
+        <li class="nav-item pcoded-menu-caption">
+          <label>Navigation</label>
+        </li>
+
+        <li class="nav-item {% if segment == 'homepage' %} active {% endif %}">
+          <a href="/" class="nav-link">
+            <span class="pcoded-micon"><i class="feather icon-home"></i></span>
+            <span class="pcoded-mtext">Home</span>
+          </a>
+        </li>
+        
+        {% if session.get('user_role') == 'super admin'%}
+        <li class="nav-item {% if segment == 'super_admin_index' %} active {% endif %}">
+          <a href="/home/super_admin_index" class="nav-link">
+            <span class="pcoded-micon"><i class="feather icon-clipboard"></i></span>
+            <span class="pcoded-mtext">Admin Control Panel</span>
+          </a>
+        </li>
+        {% endif %}
+        
+        <li class="nav-item {% if segment == 'index' %} active {% endif %}">
+          <a href="/home/index" class="nav-link">
+            <span class="pcoded-micon"><i class="feather icon-pie-chart"></i></span>
+            <span class="pcoded-mtext">Dashboard</span>
+          </a>
+        </li>
+
+        {% if session.get('user_role') == 'super admin' or session.get('user_role') == 'admin' %}
+        <li class="nav-item {% if segment == 'hover_table' %} active {% endif %}">
+          <a href="/home/hover_table" class="nav-link">
+            <span class="pcoded-micon"><i class="feather icon-server"></i></span>
+            <span class="pcoded-mtext">Products</span>
+          </a>
+        </li>
+        {% endif %}
+        
+        <li class="nav-item pcoded-menu-caption">
+          <label>Account</label>
+        </li>
+        
+        <li class="nav-item {% if segment == 'profile.html' %} active {% endif %}">
+          <a href="/home/profile.html" class="nav-link">
+            <span class="pcoded-micon"><i class="feather icon-user"></i></span>
+            <span class="pcoded-mtext">Profile Page</span>
+          </a>
+        </li>
+        
+        <li class="nav-item">
+          <a href="javascript:void(0);" class="nav-link" onclick="logout()">
+            <span class="pcoded-micon"><i class="feather icon-power"></i></span>
+            <span class="pcoded-mtext">Logout</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function logout() {
+    // Clear sessionStorage
+    sessionStorage.clear();
+
+    // Redirect to the logout URL
+    window.location.href = "{{ url_for('authentication_blueprint.logout') }}";
+  }
+</script>

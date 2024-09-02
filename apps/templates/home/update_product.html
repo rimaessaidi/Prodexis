@@ -1,0 +1,102 @@
+{% extends "layouts/base.html" %} 
+
+{% block title %} Update Product {% endblock %} 
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %} 
+
+{% block content %}
+<!-- [ Main Content ] start -->
+<div class="pcoded-main-container">
+    <div class="pcoded-wrapper">
+        <div class="pcoded-content">
+            <div class="pcoded-inner-content">
+                <!-- [ breadcrumb ] start -->
+                <div class="page-header">
+                    <div class="page-block">
+                        <div class="row align-items-center">
+                            <div class="col-md-12">
+                                <div class="page-header-title">
+                                    <h5 class="m-b-10">Update Product Link</h5>
+                                </div>
+                                <ul class="breadcrumb">
+                                    <li class="breadcrumb-item">
+                                        <a href="/"><i class="feather icon-home"></i></a>
+                                    </li>
+                                    <li class="breadcrumb-item">
+                                        <a href="javascript:">Update Product Link</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- [ breadcrumb ] end -->
+                <div class="main-body">
+                    <div class="page-wrapper">
+                        <!-- [ Main Content ] start -->
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>Product Link Details</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form method="POST" action="{{ url_for('home_blueprint.update_product', id=id) }}" enctype="multipart/form-data">
+                                            {{ form.hidden_tag() }}
+
+                                            <div class="form-group">
+                                                <label for="product_link">Product Link</label>
+                                                <input type="text" class="form-control" id="product_link" name="product_link" value="{{ form.product_link.data }}">
+                                            </div>
+                                            
+                                            <button type="submit" class="btn btn-primary">Update Product</button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <!-- [ Main Content ] end -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- [ Main Content ] end -->
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script>
+    function previewImage(event) {
+        const reader = new FileReader();
+        const cancelButton = document.getElementById('cancel_upload');
+        const imagePreview = document.getElementById('image_preview');
+
+        reader.onload = function(){
+            const output = document.getElementById('image_preview');
+            output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+
+        // Enable the cancel button when an image is selected
+        cancelButton.disabled = false;
+    }
+
+    function cancelUpload() {
+        const imageFileInput = document.getElementById('image_file');
+        const imagePreview = document.getElementById('image_preview');
+        const cancelButton = document.getElementById('cancel_upload');
+
+        // Reset the file input
+        imageFileInput.value = '';
+
+        // Revert the preview image to the original image URL
+        imagePreview.src = "{{ form.image_url.data }}";
+
+        // Disable the cancel button again
+        cancelButton.disabled = true;
+    }
+</script>
+{% endblock javascripts %}

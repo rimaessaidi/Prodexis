@@ -1,0 +1,218 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Homepage {% endblock %}
+
+{% block stylesheets %}
+<style>
+  .carousel-item {
+    display: flex;
+    overflow: hidden;
+  }
+
+  .carousel-item .card {
+    flex: 1 0 33.33%;
+    margin: 0 5px;
+    min-width: 0;
+    border-radius: 7%;
+    margin-bottom: 1rem;
+  }
+
+  .carousel-item img {
+    height: 200px;
+    object-fit: contain;
+    width: 100%;
+    margin-top: 50px;
+  }
+
+  .card {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .source-block {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    padding: 5px;
+    color: #fff;
+    font-weight: bold;
+  }
+
+  .top-source {
+    top: 0;
+    left: 0;
+    background-color: #3f4d67;
+    border-bottom: 1px solid #333f54;
+    /* Default color; will be overridden by data-category */
+  }
+
+  .bottom-source {
+    bottom: 0;
+    left: 0;
+    background-color: #3f4d67;
+    border-top: 1px solid #333f54;
+    /* Default color; will be overridden by data-category */
+  }
+
+  .card-body {
+    padding-top: 50px;
+    /* Ensure there's space for the top source block */
+    padding-bottom: 30px;
+    /* Ensure there's space for the bottom source block */
+  }
+
+  .carousel-item .card-body {
+    padding-top: 60px;
+    /* Ensure there's space for the block */
+  }
+
+  @media (max-width: 768px) {
+    .carousel-item .card {
+      flex: 0 0 100%;
+    }
+  }
+
+  /* Form and Select2 styles */
+  .form-control {
+    border-color: #007bff;
+    font-weight: bold;
+  }
+
+  .btn-primary {
+    margin-top: 1rem;
+  }
+
+  .select2-container--default .select2-selection--single {
+    height: 50px;
+    border-color: #007bff;
+    font-weight: bold;
+  }
+
+  .select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 50px;
+  }
+
+  .select2-container--default .select2-results__option {
+    line-height: 20px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="pcoded-main-container">
+  <div class="pcoded-wrapper">
+    <div class="pcoded-content">
+      <div class="pcoded-inner-content">
+
+        <!-- Page Header -->
+        <div class="page-header">
+          <div class="page-block">
+            <div class="row align-items-center">
+              <div class="col-md-12">
+                <div class="page-header-title">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter Form -->
+        <form id="filter-form" method="get" action="{{ url_for('home_blueprint.homepage') }}" class="container mt-4">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <select id="source" name="source" class="form-control" multiple="multiple">
+                  <option value="">All Sources</option>
+                  {% for source in sources %}
+                  <option value="{{ source }}" {% if source in selected_sources %}selected{% endif %}>{{ source }}
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <select id="category" name="category" class="form-control">
+                  <option value="">All Categories</option>
+                  {% for category in categories %}
+                  <option value="{{ category }}" {% if category==selected_category %}selected{% endif %}>{{ category }}
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <!-- Product Carousel -->
+        <div id="product-carousel" class="carousel slide" data-ride="false">
+          <div class="carousel-inner" id="carousel-inner">
+            {% for i in range(0, products|length, 3) %}
+            <div class="carousel-item {% if i == 0 %}active{% endif %}">
+              <div class="d-flex">
+                {% for j in range(i, i + 3) %}
+                {% if j < products|length %} <div class="card">
+                  <!-- Top Source Block -->
+                  <div class="source-block top-source" data-category="{{ products[j].source_category }}">{{
+                    products[j].category }} | {{
+                    products[j].source_category }}</div>
+                  <img src="{{ products[j].image_url }}" class="card-img-top" alt="{{ products[j].title }}">
+                  <div class="card-body">
+                    <h5 class="card-title">{{ products[j].title }}</h5>
+                    <p class="card-text">Current Price: {{ products[j].current_price }} {{ products[j].currency }}</p>
+                    <p class="card-text">Old Price: <del>{{ products[j].old_price }} {{ products[j].currency }}</del>
+                    </p>
+                    <p class="card-text">Discount: {{ products[j].discount }}%</p>
+                    <a href="{{ products[j].product_link }}" class="btn btn-primary">View Product</a>
+
+                    <!-- Bottom Source Block -->
+                    <div class="source-block bottom-source" data-category="{{ products[j].category }}"></div>
+                  </div>
+              </div>
+              {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+  $(document).ready(function () {
+    // Initialize Select2 for the source dropdown
+    $('#source').select2({
+      placeholder: "Select sources",
+      allowClear: true
+    });
+
+    // Handle form change event (i.e., when filter options change)
+    $('#filter-form').on('change', function (event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      $.ajax({
+        url: $(this).attr('action'), // Use the form's action attribute as the URL
+        type: 'GET',
+        data: $(this).serialize(), // Serialize form data for AJAX request
+        success: function (response) {
+          // Update carousel content with new data from the server
+          $('#carousel-inner').html($(response).find('#carousel-inner').html());
+
+          // Dispose of the old carousel and reinitialize it with the new content
+          $('#product-carousel').carousel('dispose').carousel({ interval: false });
+        },
+        error: function () {
+          alert('Error loading data.');
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}

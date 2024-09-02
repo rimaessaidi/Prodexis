@@ -1,0 +1,844 @@
+{% extends "layouts/base.html" %} {% block title %} Dashboard {% endblock %} {%
+block stylesheets %}
+<style>
+  #pills-home-tab.active {
+    background-color: #feee00;
+  }
+
+  #pills-profile-tab.active {
+    background-color: #e8ebee;
+  }
+
+  #pills-extra-tab.active {
+    background-color: #dbe3e8;
+  }
+
+  #pills-tunisianet-tab.active {
+    background-color: #2470bc;
+  }
+
+  #pills-mytek-tab.active {
+    background-color: #293847;
+  }
+
+  .add-product-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+
+  .card {
+    position: relative;
+  }
+
+  .section {
+    margin-bottom: 40px;
+  }
+</style>
+{% endblock stylesheets %} {% block content %}
+<div class="pcoded-main-container">
+  <div class="pcoded-wrapper">
+    <div class="pcoded-content">
+      <div class="pcoded-inner-content">
+        <h5 class="m-b-10">Dashboard</h5>
+        <span class="d-block m-t-5">
+          Analyze product price trends with interactive charts. Compare different products and filter data by date to
+          gain insights and make informed decisions.
+        </span>
+        <div class="container">
+          <div class="row">
+            <div class="col-xl-12">
+              <!-- [ Main Content ] start -->
+              <div class="col-sm-12">
+                <h5 class="mt-4">Common Websites</h5>
+                <hr />
+                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+
+                  {% if session.get('user_role') == 'super admin' %}
+                  <!-- Display all tabs for super admin -->
+                  <li class="nav-item">
+                    <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab"
+                      aria-controls="pills-home" aria-selected="true"
+                      style="padding: 0px; padding-right: 0px; padding-left: 0px">
+                      <img src="https://f.nooncdn.com/s/app/com/noon/design-system/logos/noon-logo-en.svg" alt="noon"
+                        width="70" height="40" />
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab"
+                      aria-controls="pills-profile" aria-selected="false">
+                      <img src="https://www.jarir.com/assets/images/logo/jarir.svg" alt="Jarir Logo"
+                        class="logo__image logo__image--desktop"
+                        style="padding: 0px; padding-right: 0px; padding-left: 0px" />
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="pills-extra-tab" data-toggle="pill" href="#pills-extra" role="tab"
+                      aria-controls="pills-extra" aria-selected="false"
+                      style="padding: 3px; padding-right: 0px; padding-left: 0px">
+                      <img src="https://cdn.extrastores.com/hybris/new_ui_ux/logo/eXtra-logo.svg" alt="eXtra" width="65"
+                        height="35" />
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="pills-tunisianet-tab" data-toggle="pill" href="#pills-tunisianet" role="tab"
+                      aria-controls="pills-tunisianet" aria-selected="false"
+                      style="padding: 5px; padding-right: 0px; padding-left: 0px">
+                      <img src="{{ url_for('static', filename='assets/images/tunisianet.png') }}" alt="Tunisianet"
+                        width="75" height="30" />
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="pills-mytek-tab" data-toggle="pill" href="#pills-mytek" role="tab"
+                      aria-controls="pills-mytek" aria-selected="false"
+                      style="padding: 7px; padding-right: 0px; padding-left: 0px">
+                      <img src="https://mk-media.mytek.tn/media/logo/stores/1/LOGO-MYTEK-176PX-INVERSE.png" alt="Mytek"
+                        width="55" height="25" />
+                    </a>
+                  </li>
+
+                  {% elif session.get('user_country') == 'Saudi Arabia' %}
+                  <!-- Display Saudi Arabia tabs -->
+                  <li class="nav-item">
+                    <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab"
+                      aria-controls="pills-home" aria-selected="true"
+                      style="padding: 0px; padding-right: 0px; padding-left: 0px">
+                      <img src="https://f.nooncdn.com/s/app/com/noon/design-system/logos/noon-logo-en.svg" alt="noon"
+                        width="70" height="40" />
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab"
+                      aria-controls="pills-profile" aria-selected="false">
+                      <img src="https://www.jarir.com/assets/images/logo/jarir.svg" alt="Jarir Logo"
+                        class="logo__image logo__image--desktop"
+                        style="padding: 0px; padding-right: 0px; padding-left: 0px" />
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="pills-extra-tab" data-toggle="pill" href="#pills-extra" role="tab"
+                      aria-controls="pills-extra" aria-selected="false"
+                      style="padding: 3px; padding-right: 0px; padding-left: 0px">
+                      <img src="https://cdn.extrastores.com/hybris/new_ui_ux/logo/eXtra-logo.svg" alt="eXtra" width="65"
+                        height="35" />
+                    </a>
+                  </li>
+
+                  {% elif session.get('user_country') == 'Tunisia' %}
+                  <!-- Display Tunisia tabs -->
+                  <li class="nav-item">
+                    <a class="nav-link active" id="pills-tunisianet-tab" data-toggle="pill" href="#pills-tunisianet"
+                      role="tab" aria-controls="pills-tunisianet" aria-selected="true"
+                      style="padding: 5px; padding-right: 0px; padding-left: 0px">
+                      <img src="{{ url_for('static', filename='assets/images/tunisianet.png') }}" alt="Tunisianet"
+                        width="75" height="30" />
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="pills-mytek-tab" data-toggle="pill" href="#pills-mytek" role="tab"
+                      aria-controls="pills-mytek" aria-selected="false"
+                      style="padding: 7px; padding-right: 0px; padding-left: 0px">
+                      <img src="https://mk-media.mytek.tn/media/logo/stores/1/LOGO-MYTEK-176PX-INVERSE.png" alt="Mytek"
+                        width="55" height="25" />
+                    </a>
+                  </li>
+
+                  {% elif session.get('user_country') == 'International' %}
+                  <!-- Display International tabs -->
+                  {% endif %}
+                </ul>
+
+                <div class="tab-content" id="pills-tabContent">
+                  <!-- Content For Noon Tab -->
+                  <div
+                    class="tab-pane fade {% if session.get('user_country') == 'Saudi Arabia' or session.get('user_country') == 'International' %}show active{% endif %}"
+                    id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                    <!-- [ Main Content ] start -->
+                    <div class="row">
+                      <div class="col-xl-12 m-b-30">
+                        <!-- [ KPI Chart ] start -->
+                        <div class="card">
+                          <div class="card-header">
+                            <h5 class="mb-3">Welcome! Get Started by Selecting a Product</h5>
+                            <br><br>
+                            {% if session.get('selectedProjectId') %}
+                            <div class="form-group">
+                              <select id="product-select-noon" class="form-control"
+                                style="border-color: #007bff; font-weight: bold;">
+                                <option value="">Select a product to display data</option>
+                                {% for product in kpi_data if product.category
+                                == "noon" %}
+                                <option value="{{ product.title }}">
+                                  {{ loop.index }} - {{ product.title }}
+                                </option>
+                                {% endfor %}
+                              </select>
+                            </div>
+                            {% else %}
+                            <div class="alert alert-warning" role="alert"
+                              style="border-color: #be1414; font-weight: bold;">
+                              No project selected. Please select a project to
+                              view dashboard data.
+                            </div>
+                            {% endif %}
+                          </div>
+
+                          <!-- [ Product List ] start -->
+                          {% if session.get('selectedProjectId') %} {% for
+                          product in kpi_data if product.category == "noon" %}
+                          <div class="product-card mb-3" style="display: none" data-product-title="{{ product.title }}">
+                            <div class="card-body">
+                              <div class="row">
+                                <div class="col-md-4">
+                                  <img src="{{ product.image_url }}" alt="Product Image" class="img-fluid" />
+                                </div>
+                                <div class="col-md-8">
+                                  <h5 class="card-title">
+                                    {{ product.title }}
+                                  </h5>
+                                  <p class="card-text">
+                                    Current Price: {{ product.current_price }}
+                                    {{ product.currency }}
+                                  </p>
+                                  <p class="card-text">
+                                    Lowest Price: {{ product.lowest_price }} {{
+                                    product.currency }}
+                                  </p>
+                                  <a href="{{ product.product_link }}" target="_blank" class="btn btn-primary">View
+                                    Product</a>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          {% endfor %} {% endif %}
+                          <!-- [ Product List ] end -->
+
+                          {% if session.get('selectedProjectId') %}
+                          <div class="card-body">
+                            <!-- [ Price Fluctuations Chart ] -->
+                            <div id="kpi-chart-noon" style="width: 100%; height: 300px"></div>
+                            <div class="form-group mt-4">
+                              <label for="multi-product-select-noon">Select Multiple Products:</label>
+                              <select id="multi-product-select-noon" class="form-control" multiple>
+                                {% for product in kpi_data if product.category
+                                == "noon" %}
+                                <option value="{{ product.title }}">
+                                  {{ loop.index }} - {{ product.title }}
+                                </option>
+                                {% endfor %}
+                              </select>
+                            </div>
+                            <div class="form-group mt-4">
+                              <label for="date-filter-noon">Filter by Date:</label>
+                              <input type="date" id="date-filter-noon" class="form-control"
+                                style="border-color: #007bff; font-weight: bold;" />
+                            </div>
+                            <div id="multi-product-chart-noon" style="width: 100%; height: 400px"></div>
+                          </div>
+                          {% endif %}
+                        </div>
+                        <!-- [ KPI Chart ] end -->
+                      </div>
+                    </div>
+                  </div>
+                  <!-- [ Main Content ] end -->
+                  <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                    <!-- [ Main Content ] start -->
+                    <div class="row">
+                      <div class="col-xl-12 m-b-30">
+                        <!-- [ KPI Chart ] start -->
+                        <div class="card">
+                          <div class="card-header">
+                            <h5 class="mb-3">Welcome! Get Started by Selecting a Product</h5>
+                            <br><br>
+                            {% if session.get('selectedProjectId') %}
+                            <div class="form-group">
+                              <select id="product-select-jarir" class="form-control"
+                                style="border-color: #007bff; font-weight: bold;">
+                                <option value="">Select a product to display data</option>
+                                {% for product in kpi_data if product.category
+                                == 'jarir' %}
+                                <option value="{{ product.title }}">
+                                  {{ loop.index }} - {{ product.title }}
+                                </option>
+                                {% endfor %}
+                              </select>
+                            </div>
+                            {% else %}
+                            <div class="alert alert-warning" role="alert"
+                              style="border-color: #be1414; font-weight: bold;">
+                              No project selected. Please select a project to
+                              view dashboard data.
+                            </div>
+                            {% endif %}
+                          </div>
+
+                          <!-- [ Product List ] start -->
+                          {% if session.get('selectedProjectId') %} {% for
+                          product in kpi_data if product.category == 'jarir' %}
+                          <div class="product-card mb-3" style="display: none" data-product-title="{{ product.title }}">
+                            <div class="card-body">
+                              <div class="row">
+                                <div class="col-md-4">
+                                  <img src="{{ product.image_url }}" alt="Product Image" class="img-fluid" />
+                                </div>
+                                <div class="col-md-8">
+                                  <h5 class="card-title">
+                                    {{ product.title }}
+                                  </h5>
+                                  <p class="card-text">
+                                    Current Price: {{ product.current_price }}
+                                    {{ product.currency }}
+                                  </p>
+                                  <p class="card-text">
+                                    Lowest Price: {{ product.lowest_price }} {{
+                                    product.currency }}
+                                  </p>
+                                  <a href="{{ product.product_link }}" target="_blank" class="btn btn-primary">View
+                                    Product</a>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          {% endfor %} {% endif %}
+                          <!-- [ Product List ] end -->
+
+                          {% if session.get('selectedProjectId') %}
+                          <div class="card-body">
+                            <!-- [ Price Fluctuations Chart ] -->
+                            <div id="kpi-chart-jarir" style="width: 100%; height: 300px"></div>
+                            <div class="form-group mt-4">
+                              <label for="multi-product-select-jarir">Select Multiple Products:</label>
+                              <select id="multi-product-select-jarir" class="form-control" multiple>
+                                {% for product in kpi_data if product.category
+                                == 'jarir' %}
+                                <option value="{{ product.title }}">
+                                  {{ loop.index }} - {{ product.title }}
+                                </option>
+                                {% endfor %}
+                              </select>
+                            </div>
+                            <div class="form-group mt-4">
+                              <label for="date-filter-jarir">Filter by Date:</label>
+                              <input type="date" id="date-filter-jarir" class="form-control"
+                                style="border-color: #007bff; font-weight: bold;" />
+                            </div>
+                            <div id="multi-product-chart-jarir" style="width: 100%; height: 400px"></div>
+                          </div>
+                          {% endif %}
+                        </div>
+                        <!-- [ KPI Chart ] end -->
+                      </div>
+                    </div>
+                  </div>
+                  <!-- eXtra tab content -->
+                  <div class="tab-pane fade" id="pills-extra" role="tabpanel" aria-labelledby="pills-extra-tab">
+                    <!-- [ Main Content ] start -->
+                    <div class="row">
+                      <div class="col-xl-12 m-b-30">
+                        <!-- [ KPI Chart ] start -->
+                        <div class="card">
+                          <div class="card-header">
+                            <h5 class="mb-3">Welcome! Get Started by Selecting a Product</h5>
+                            <br><br>
+                            {% if session.get('selectedProjectId') %}
+                            <div class="form-group">
+                              <select id="product-select-extra" class="form-control"
+                                style="border-color: #007bff; font-weight: bold;">
+                                <option value="">Select a product to display data</option>
+                                {% for product in kpi_data if product.category
+                                == 'extra' %}
+                                <option value="{{ product.title }}">
+                                  {{ loop.index }} - {{ product.title }}
+                                </option>
+                                {% endfor %}
+                              </select>
+                            </div>
+                            {% else %}
+                            <div class="alert alert-warning" role="alert"
+                              style="border-color: #be1414; font-weight: bold;">
+                              No project selected. Please select a project to
+                              view dashboard data.
+                            </div>
+                            {% endif %}
+                          </div>
+
+                          <!-- [ Product List ] start -->
+                          {% if session.get('selectedProjectId') %} {% for
+                          product in kpi_data if product.category == 'extra' %}
+                          <div class="product-card mb-3" style="display: none" data-product-title="{{ product.title }}">
+                            <div class="card-body">
+                              <div class="row">
+                                <div class="col-md-4">
+                                  <img src="{{ product.image_url }}" alt="Product Image" class="img-fluid" />
+                                </div>
+                                <div class="col-md-8">
+                                  <h5 class="card-title">
+                                    {{ product.title }}
+                                  </h5>
+                                  <p class="card-text">
+                                    Current Price: {{ product.current_price }}
+                                    {{ product.currency }}
+                                  </p>
+                                  <p class="card-text">
+                                    Lowest Price: {{ product.lowest_price }} {{
+                                    product.currency }}
+                                  </p>
+                                  <a href="{{ product.product_link }}" target="_blank" class="btn btn-primary">View
+                                    Product</a>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          {% endfor %} {% endif %}
+                          <!-- [ Product List ] end -->
+
+                          {% if session.get('selectedProjectId') %}
+                          <div class="card-body">
+                            <!-- [ Price Fluctuations Chart ] -->
+                            <div id="kpi-chart-extra" style="width: 100%; height: 300px"></div>
+                            <div class="form-group mt-4">
+                              <label for="multi-product-select-extra">Select Multiple Products:</label>
+                              <select id="multi-product-select-extra" class="form-control" multiple>
+                                {% for product in kpi_data if product.category
+                                == 'extra' %}
+                                <option value="{{ product.title }}">
+                                  {{ loop.index }} - {{ product.title }}
+                                </option>
+                                {% endfor %}
+                              </select>
+                            </div>
+                            <div class="form-group mt-4">
+                              <label for="date-filter-extra">Filter by Date:</label>
+                              <input type="date" id="date-filter-extra" class="form-control"
+                                style="border-color: #007bff; font-weight: bold;" />
+                            </div>
+                            <div id="multi-product-chart-extra" style="width: 100%; height: 400px"></div>
+                          </div>
+                          {% endif %}
+                        </div>
+                        <!-- [ KPI Chart ] end -->
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Tunisianet tab content -->
+                  <div class="tab-pane fade {% if session.get('user_country') == 'Tunisia' %}show active{% endif %}"
+                    id="pills-tunisianet" role="tabpanel" aria-labelledby="pills-tunisianet-tab">
+                    <!-- [ Main Content ] start -->
+                    <div class="row">
+                      <div class="col-xl-12 m-b-30">
+                        <!-- [ KPI Chart ] start -->
+                        <div class="card">
+                          <div class="card-header">
+                            <h5 class="mb-3">Welcome! Get Started by Selecting a Product</h5>
+                            <br><br>
+                            {% if session.get('selectedProjectId') %}
+                            <div class="form-group">
+                              <select id="product-select-tunisianet" class="form-control"
+                                style="border-color: #007bff; font-weight: bold;">
+                                <option value="">Select a product to display data</option>
+                                {% for product in kpi_data if product.category
+                                == 'tunisianet' %}
+                                <option value="{{ product.title }}">
+                                  {{ loop.index }} - {{ product.title }}
+                                </option>
+                                {% endfor %}
+                              </select>
+                            </div>
+                            {% else %}
+                            <div class="alert alert-warning" role="alert"
+                              style="border-color: #be1414; font-weight: bold;">
+                              No project selected. Please select a project to
+                              view dashboard data.
+                            </div>
+                            {% endif %}
+                          </div>
+
+                          <!-- [ Product List ] start -->
+                          {% if session.get('selectedProjectId') %} {% for
+                          product in kpi_data if product.category ==
+                          'tunisianet' %}
+                          <div class="product-card mb-3" style="display: none" data-product-title="{{ product.title }}">
+                            <div class="card-body">
+                              <div class="row">
+                                <div class="col-md-4">
+                                  <img src="{{ product.image_url }}" alt="Product Image" class="img-fluid" />
+                                </div>
+                                <div class="col-md-8">
+                                  <h5 class="card-title">
+                                    {{ product.title }}
+                                  </h5>
+                                  <p class="card-text">
+                                    Current Price: {{ product.current_price }}
+                                    {{ product.currency }}
+                                  </p>
+                                  <p class="card-text">
+                                    Lowest Price: {{ product.lowest_price }} {{
+                                    product.currency }}
+                                  </p>
+                                  <a href="{{ product.product_link }}" target="_blank" class="btn btn-primary">View
+                                    Product</a>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          {% endfor %} {% endif %}
+                          <!-- [ Product List ] end -->
+
+                          {% if session.get('selectedProjectId') %}
+                          <div class="card-body">
+                            <!-- [ Price Fluctuations Chart ] -->
+                            <div id="kpi-chart-tunisianet" style="width: 100%; height: 300px"></div>
+                            <div class="form-group mt-4">
+                              <label for="multi-product-select-tunisianet">Select Multiple Products:</label>
+                              <select id="multi-product-select-tunisianet" class="form-control" multiple>
+                                {% for product in kpi_data if product.category
+                                == 'tunisianet' %}
+                                <option value="{{ product.title }}">
+                                  {{ loop.index }} - {{ product.title }}
+                                </option>
+                                {% endfor %}
+                              </select>
+                            </div>
+                            <div class="form-group mt-4">
+                              <label for="date-filter-tunisianet">Filter by Date:</label>
+                              <input type="date" id="date-filter-tunisianet" class="form-control"
+                                style="border-color: #007bff; font-weight: bold;" />
+                            </div>
+                            <div id="multi-product-chart-tunisianet" style="width: 100%; height: 400px"></div>
+                          </div>
+                          {% endif %}
+                        </div>
+                        <!-- [ KPI Chart ] end -->
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Mytek tab content -->
+                  <div class="tab-pane fade" id="pills-mytek" role="tabpanel" aria-labelledby="pills-mytek-tab">
+                    <!-- [ Main Content ] start -->
+                    <div class="row">
+                      <div class="col-xl-12 m-b-30">
+                        <!-- [ KPI Chart ] start -->
+                        <div class="card">
+                          <div class="card-header">
+                            <h5 class="mb-3">Welcome! Get Started by Selecting a Product</h5>
+                            <br><br>
+                            {% if session.get('selectedProjectId') %}
+                            <div class="form-group">
+                              <select id="product-select-mytek" class="form-control"
+                                style="border-color: #007bff; font-weight: bold;">
+                                <option value="">Select a product to display data</option>
+                                {% for product in kpi_data if product.category
+                                == 'mytek' %}
+                                <option value="{{ product.title }}">
+                                  {{ loop.index }} - {{ product.title }}
+                                </option>
+                                {% endfor %}
+                              </select>
+                            </div>
+                            {% else %}
+                            <div class="alert alert-warning" role="alert"
+                              style="border-color: #be1414; font-weight: bold;">
+                              No project selected. Please select a project to
+                              view dashboard data.
+                            </div>
+                            {% endif %}
+                          </div>
+
+                          <!-- [ Product List ] start -->
+                          {% if session.get('selectedProjectId') %} {% for
+                          product in kpi_data if product.category == 'mytek' %}
+                          <div class="product-card mb-3" style="display: none" data-product-title="{{ product.title }}">
+                            <div class="card-body">
+                              <div class="row">
+                                <div class="col-md-4">
+                                  <img src="{{ product.image_url }}" alt="Product Image" class="img-fluid" />
+                                </div>
+                                <div class="col-md-8">
+                                  <h5 class="card-title">
+                                    {{ product.title }}
+                                  </h5>
+                                  <p class="card-text">
+                                    Current Price: {{ product.current_price }}
+                                    {{ product.currency }}
+                                  </p>
+                                  <p class="card-text">
+                                    Lowest Price: {{ product.lowest_price }} {{
+                                    product.currency }}
+                                  </p>
+                                  <a href="{{ product.product_link }}" target="_blank" class="btn btn-primary">View
+                                    Product</a>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          {% endfor %} {% endif %}
+                          <!-- [ Product List ] end -->
+
+                          {% if session.get('selectedProjectId') %}
+                          <div class="card-body">
+                            <!-- [ Price Fluctuations Chart ] -->
+                            <div id="kpi-chart-mytek" style="width: 100%; height: 300px"></div>
+                            <div class="form-group mt-4">
+                              <label for="multi-product-select-mytek">Select Multiple Products:</label>
+                              <select id="multi-product-select-mytek" class="form-control" multiple>
+                                {% for product in kpi_data if product.category
+                                == 'mytek' %}
+                                <option value="{{ product.title }}">
+                                  {{ loop.index }} - {{ product.title }}
+                                </option>
+                                {% endfor %}
+                              </select>
+                            </div>
+                            <div class="form-group mt-4">
+                              <label for="date-filter-mytek">Filter by Date:</label>
+                              <input type="date" id="date-filter-mytek" class="form-control"
+                                style="border-color: #007bff; font-weight: bold;" />
+                            </div>
+                            <div id="multi-product-chart-mytek" style="width: 100%; height: 400px"></div>
+                          </div>
+                          {% endif %}
+                        </div>
+                        <!-- [ KPI Chart ] end -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %} {% block javascripts %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Handling tab clicks
+    document.querySelectorAll("#pills-tab a").forEach(function (tab) {
+      tab.addEventListener("click", function (e) {
+        e.preventDefault();
+        new bootstrap.Tab(tab).show(); // Use Bootstrap's JavaScript to show the tab
+      });
+    });
+
+    // Track active products for each tab
+    var activeProducts = {};
+
+    // Activate the corresponding tab based on the URL hash
+    var hash = window.location.hash;
+    if (hash) {
+      var tabToShow = document.querySelector(
+        '#pills-tab a[href="' + hash + '"]'
+      );
+      if (tabToShow) {
+        new bootstrap.Tab(tabToShow).show();
+      }
+    }
+
+    // Ensure JSON data is correctly parsed
+    var kpiData = JSON.parse(
+      '{{ kpi_data|tojson|safe|e }}'
+    );
+
+    // Create a product map for consistent IDs
+    var productMap = {};
+    kpiData.forEach((product, index) => {
+      productMap[product.title] = index + 1; // Ensure unique ID for each product title
+    });
+
+    function getProductID(title) {
+      return productMap[title] || title;
+    }
+
+    function updateChart(productTitle, chartId, tabId) {
+      var selectedData = kpiData.find((p) => p.title === productTitle);
+      var chartData = [];
+
+      if (selectedData) {
+        chartData.push({
+          x: selectedData.price_fluctuations.map((f) => f.date),
+          y: selectedData.price_fluctuations.map((f) => f.price),
+          type: "scatter",
+          mode: "lines+markers",
+          name: getProductID(productTitle),
+        });
+      }
+
+      Plotly.newPlot(chartId, chartData, {
+        title: "Price Fluctuations Over Time",
+        xaxis: { title: "Date" },
+        yaxis: { title: "Price" },
+        showlegend: true,
+        responsive: true,
+      });
+
+      // Save the active product for the tab
+      activeProducts[tabId] = productTitle;
+
+      // Display the cards for all active products across tabs
+      showProductCards();
+    }
+
+    function showProductCards() {
+      var productCards = document.querySelectorAll(".product-card");
+      productCards.forEach(function (card) {
+        var title = card.getAttribute("data-product-title");
+        var shouldDisplay = Object.values(activeProducts).includes(title);
+        card.style.display = shouldDisplay ? "block" : "none";
+      });
+    }
+
+    function updateMultiProductChart(selectedTitles, chartId) {
+      var chartData = selectedTitles
+        .map(function (title) {
+          var selectedData = kpiData.find((p) => p.title === title);
+          if (selectedData) {
+            return {
+              x: selectedData.price_fluctuations.map((f) => f.date),
+              y: selectedData.price_fluctuations.map((f) => f.price),
+              type: "scatter",
+              mode: "lines+markers",
+              name: getProductID(title),
+            };
+          }
+        })
+        .filter((data) => data);
+
+      Plotly.newPlot(chartId, chartData, {
+        title: "Price Comparison Over Time",
+        xaxis: { title: "Date" },
+        yaxis: { title: "Price" },
+        showlegend: true,
+        responsive: true,
+      });
+    }
+
+    function applyDateFilter(selectedTitles, date, chartId) {
+      var chartData = selectedTitles
+        .map(function (title) {
+          var selectedData = kpiData.find((p) => p.title === title);
+          if (selectedData) {
+            var filteredFluctuations = selectedData.price_fluctuations.filter(
+              function (f) {
+                return new Date(f.date) <= new Date(date);
+              }
+            );
+
+            return {
+              x: filteredFluctuations.map((f) => f.date),
+              y: filteredFluctuations.map((f) => f.price),
+              type: "scatter",
+              mode: "lines+markers",
+              name: getProductID(title),
+            };
+          }
+        })
+        .filter((data) => data);
+
+      Plotly.newPlot(chartId, chartData, {
+        title: "Price Comparison Over Time",
+        xaxis: { title: "Date" },
+        yaxis: { title: "Price" },
+        showlegend: true,
+        responsive: true,
+      });
+    }
+
+    // Initialize Select2 for multi-select elements
+    function initializeSelect2() {
+      document.querySelectorAll(".form-control[multiple]").forEach(function (element) {
+        $(element)
+          .select2({
+            allowClear: true,
+          })
+          .on("change", function () {
+            var selectedOptions = $(this).val();
+            var tabId = this.id.split("-").pop(); // Extract tabId from element ID
+            if (tabId) {
+              updateMultiProductChart(
+                selectedOptions,
+                `multi-product-chart-${tabId}`
+              );
+            }
+          });
+
+        // Apply the custom styling to Select2 element
+        $(element).next('.select2-container').find('.select2-selection').css({
+          'border-color': '#007bff',
+          'font-weight': 'bold'
+        });
+      });
+    }
+
+    // Initialize charts and cards with the first items
+    function initializeTab(tabId) {
+      var productSelect = document.getElementById(`product-select-${tabId}`);
+      var multiProductSelect = document.getElementById(
+        `multi-product-select-${tabId}`
+      );
+      var dateFilter = document.getElementById(`date-filter-${tabId}`);
+
+      if (productSelect && productSelect.options.length > 0) {
+        var firstProduct = productSelect.options[0].value;
+        updateChart(firstProduct, `kpi-chart-${tabId}`, tabId);
+      }
+
+      if (multiProductSelect && multiProductSelect.options.length > 0) {
+        var selectedOptions = Array.from(multiProductSelect.options).map(
+          (option) => option.value
+        );
+        updateMultiProductChart(
+          selectedOptions,
+          `multi-product-chart-${tabId}`
+        );
+      }
+
+      if (dateFilter) {
+        var date = dateFilter.value;
+        if (date && multiProductSelect) {
+          var selectedOptions = Array.from(multiProductSelect.options).map(
+            (option) => option.value
+          );
+          applyDateFilter(
+            selectedOptions,
+            date,
+            `multi-product-chart-${tabId}`
+          );
+        }
+      }
+    }
+
+    // Initialize all tabs
+    const tabIds = ["noon", "jarir", "extra", "tunisianet", "mytek"];
+    tabIds.forEach((tabId) => {
+      initializeTab(tabId);
+    });
+
+    // Initialize Select2
+    initializeSelect2();
+
+    // Add event listeners for tabs
+    tabIds.forEach((tabId) => {
+      document
+        .getElementById(`product-select-${tabId}`)
+        .addEventListener("change", function () {
+          var selectedTitle = this.value;
+          if (selectedTitle) {
+            updateChart(selectedTitle, `kpi-chart-${tabId}`, tabId);
+          }
+        });
+
+      document
+        .getElementById(`date-filter-${tabId}`)
+        .addEventListener("change", function () {
+          var selectedOptions = $(`#multi-product-select-${tabId}`).val();
+          var date = this.value;
+          applyDateFilter(selectedOptions, date, `multi-product-chart-${tabId}`);
+        });
+    });
+  });
+</script>
+{% endblock javascripts %}

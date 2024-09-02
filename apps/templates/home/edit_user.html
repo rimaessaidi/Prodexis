@@ -1,0 +1,196 @@
+{% extends "layouts/base.html" %} {% block title %} Edit User {% endblock %} {%
+block stylesheets %}
+<style>
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .loader {
+    border: 8px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 8px solid #3498db;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .return-btn {
+    position: sticky;
+    top: 10px;
+    left: 10px;
+    background-color: #3f4d67;
+    color: white;
+    border: none;
+    padding: 10px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    z-index: 100;
+  }
+</style>
+{% endblock %} {% block content %}
+<section class="pcoded-main-container">
+  <div class="pcoded-wrapper">
+    <div class="pcoded-content">
+      <div class="pcoded-inner-content">
+        <button class="return-btn" id="return-btn">
+          <i class="fas fa-arrow-left"></i></button
+        ><br />
+        <div class="page-header">
+          <div class="page-block">
+            <div class="row align-items-center">
+              <div class="col-md-12">
+                <div class="page-header-title">
+                  <h5 class="m-b-10">Edit User</h5>
+                  <p class="text-muted">
+                    Modify the user's details and update project assignments.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12">
+          <div class="card">
+            <div class="card-header">
+              <h5>Edit User</h5>
+            </div>
+            <div class="card-block">
+              <form
+                id="edit-user-form"
+                method="POST"
+                action="{{ url_for('home_blueprint.edit_user', user_id=user.id) }}"
+              >
+                {{ form.hidden_tag() }}
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      {{ form.username.label(class="form-label") }} {{
+                      form.username(class="form-control", placeholder="Enter username") }} {% for error in form.username.errors %}
+                      <div class="alert alert-danger">{{ error }}</div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      {{ form.email.label(class="form-label") }} {{
+                      form.email(class="form-control", placeholder="Enter email") }} {% for error in form.email.errors %}
+                      <div class="alert alert-danger">{{ error }}</div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      {{ form.password.label(class="form-label") }} {{
+                      form.password(class="form-control", placeholder="Enter new password (optional)") }} {% for error in
+                      form.password.errors %}
+                      <div class="alert alert-danger">{{ error }}</div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      {{ form.role.label(class="form-label") }} {{
+                      form.role(class="form-control", placeholder="Enter role")
+                      }} {% for error in form.role.errors %}
+                      <div class="alert alert-danger">{{ error }}</div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      {{ form.country.label(class="form-label") }} {{
+                      form.country(class="form-control", placeholder="Enter country") }} {% for error in form.country.errors %}
+                      <div class="alert alert-danger">{{ error }}</div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label for="projects">Assign Projects</label>
+                      <div id="projects">
+                        {% for project in projects %}
+                        <div class="form-check">
+                          <input
+                            type="checkbox"
+                            class="form-check-input"
+                            id="project-{{ project.id }}"
+                            name="project_ids"
+                            value="{{ project.id }}"
+                            {%
+                            if
+                            project.id
+                            in
+                            user_project_ids
+                            %}
+                            checked
+                            {%
+                            endif
+                            %}
+                          />
+                          <label
+                            class="form-check-label"
+                            for="project-{{ project.id }}"
+                            >{{ project.name }}</label
+                          >
+                        </div>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                  Update User
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Loader Overlay -->
+<div class="overlay" id="overlay">
+  <div class="loader"></div>
+</div>
+{% endblock %} {% block javascripts %}
+<script>
+  document
+    .getElementById("edit-user-form")
+    .addEventListener("submit", function () {
+      document.getElementById("overlay").style.display = "flex";
+    });
+
+  document.getElementById("return-btn").addEventListener("click", function () {
+    window.location.href = '{{ url_for("home_blueprint.super_admin_index") }}';
+  });
+</script>
+{% endblock %}
